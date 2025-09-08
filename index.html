@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobTrackr - Professional Job Application Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 30px -5px rgba(0,0,0,0.15), 0 15px 15px -5px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: monospace;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .job-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .job-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .job-list::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .job-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .job-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .job-item:hover {
+            background: white;
+            transform: translateX(5px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .job-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .job-company {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .job-url {
+            color: var(--primary);
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .job-url:hover {
+            text-decoration: underline;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .share-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border);
+        }
+
+        .share-code {
+            background: var(--dark);
+            color: #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            position: relative;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .copy-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-indicator.show {
+            opacity: 1;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text);
+            opacity: 0.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 JobTrackr</h1>
+            <p>Professional Job Application Tracking Made Simple</p>
+        </div>
+
+        <div class="main-grid">
+            <!-- Add New Job Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <div class="icon">➕</div>
+                    Add New Application
+                </h2>
+                <form id="jobForm">
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title</label>
+                        <input type="text" id="jobTitle" placeholder="e.g., Senior Software Engineer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <input type="text" id="company" placeholder="e.g., Tech Corp" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobUrl">Job URL</label>
+                        <input type="url" id="jobUrl" placeholder="https://example.com/job-posting" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span>➕</span> Add Job
+                    </button>
+                </form>
+
+                <div class="share-section">
+                    <h3 class="card-title">
+                        <div class="icon">🔗</div>
+                        Share Your Jobs
+                    </h3>
+                    <button id="shareBtn" class="btn btn-success">
+                        <span>📤</span> Generate Share Code
+                    </button>
+                    <div id="shareCode" class="share-code" style="display: none;">
+                        <div class="copy-indicator" id="copyIndicator">Copied!</div>
+                        <div id="shareCodeContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Jobs Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <div class="icon">💼</div>
+                    My Applications
+                    <span class="badge" id="jobCount">0</span>
+                </h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalJobs">0</div>
+                        <div class="stat-label">Total Jobs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="uniqueCompanies">0</div>
+                        <div class="stat-label">Companies</div>
+                    </div>
+                </div>
+                <div id="jobList" class="job-list">
+                    <div class="empty-state">No jobs added yet. Add your first application!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Shared Jobs Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <div class="icon">👁️</div>
+                View Shared Jobs
+            </h2>
+            <div class="form-group">
+                <label for="sharedCode">Paste Share Code</label>
+                <textarea id="sharedCode" placeholder="Paste the share code here..."></textarea>
+            </div>
+            <button id="loadSharedBtn" class="btn btn-primary">
+                <span>📥</span> Load Shared Jobs
+            </button>
+            <div id="sharedJobsList" class="job-list" style="margin-top: 20px;">
+                <div class="empty-state">No shared jobs loaded. Paste a share code above!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Job storage
+        let jobs = [];
+
+        // Load jobs from localStorage on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedJobs = localStorage.getItem('jobTrackerJobs');
+            if (savedJobs) {
+                jobs = JSON.parse(savedJobs);
+                renderJobs();
+                updateStats();
+            }
+        });
+
+        // Add new job
+        document.getElementById('jobForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('jobTitle').value;
+            const company = document.getElementById('company').value;
+            const url = document.getElementById('jobUrl').value;
+            
+            const job = {
+                id: Date.now(),
+                title,
+                company,
+                url,
+                dateAdded: new Date().toLocaleDateString()
+            };
+            
+            jobs.push(job);
+            saveJobs();
+            renderJobs();
+            updateStats();
+            
+            // Reset form
+            document.getElementById('jobForm').reset();
+            
+            // Show success animation
+            const button = document.querySelector('#jobForm button');
+            button.textContent = '✓ Added!';
+            button.style.background = 'var(--success)';
+            setTimeout(() => {
+                button.innerHTML = '<span>➕</span> Add Job';
+                button.style.background = '';
+            }, 2000);
+        });
+
+        // Save jobs to localStorage
+        function saveJobs() {
+            localStorage.setItem('jobTrackerJobs', JSON.stringify(jobs));
+        }
+
+        // Render jobs list
+        function renderJobs() {
+            const jobList = document.getElementById('jobList');
+            
+            if (jobs.length === 0) {
+                jobList.innerHTML = '<div class="empty-state">No jobs added yet. Add your first application!</div>';
+                return;
+            }
+            
+            jobList.innerHTML = jobs.map(job => `
+                <div class="job-item">
+                    <div class="job-title">${job.title}</div>
+                    <div class="job-company">${job.company}</div>
+                    <a href="${job.url}" target="_blank" class="job-url">${job.url}</a>
+                    <div style="font-size: 0.85rem; color: #64748b;">Added: ${job.dateAdded}</div>
+                    <div class="job-actions">
+                        <button class="btn btn-danger" onclick="removeJob(${job.id})">
+                            🗑️ Remove
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Remove job
+        function removeJob(id) {
+            jobs = jobs.filter(job => job.id !== id);
+            saveJobs();
+            renderJobs();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('jobCount').textContent = jobs.length;
+            document.getElementById('totalJobs').textContent = jobs.length;
+            
+            const uniqueCompanies = [...new Set(jobs.map(job => job.company))].length;
+            document.getElementById('uniqueCompanies').textContent = uniqueCompanies;
+        }
+
+        // Generate share code
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            if (jobs.length === 0) {
+                alert('No jobs to share! Add some jobs first.');
+                return;
+            }
+            
+            const shareData = btoa(JSON.stringify(jobs));
+            const shareCodeDiv = document.getElementById('shareCode');
+            const shareCodeContent = document.getElementById('shareCodeContent');
+            
+            shareCodeContent.textContent = shareData;
+            shareCodeDiv.style.display = 'block';
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareData).then(() => {
+                const indicator = document.getElementById('copyIndicator');
+                indicator.classList.add('show');
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 2000);
+            });
+        });
+
+        // Load shared jobs
+        document.getElementById('loadSharedBtn').addEventListener('click', () => {
+            const sharedCode = document.getElementById('sharedCode').value.trim();
+            
+            if (!sharedCode) {
+                alert('Please paste a share code first!');
+                return;
+            }
+            
+            try {
+                const sharedJobs = JSON.parse(atob(sharedCode));
+                const sharedJobsList = document.getElementById('sharedJobsList');
+                
+                if (sharedJobs.length === 0) {
+                    sharedJobsList.innerHTML = '<div class="empty-state">No jobs in this share code.</div>';
+                    return;
+                }
+                
+                sharedJobsList.innerHTML = `
+                    <div style="margin-bottom: 15px; padding: 10px; background: var(--success); color: white; border-radius: 8px;">
+                        ✓ Loaded ${sharedJobs.length} shared job(s)
+                    </div>
+                ` + sharedJobs.map(job => `
+                    <div class="job-item">
+                        <div class="job-title">${job.title}</div>
+                        <div class="job-company">${job.company}</div>
+                        <a href="${job.url}" target="_blank" class="job-url">${job.url}</a>
+                        <div style="font-size: 0.85rem; color: #64748b;">Added: ${job.dateAdded}</div>
+                    </div>
+                `).join('');
+                
+                // Clear the textarea
+                document.getElementById('sharedCode').value = '';
+                
+            } catch (error) {
+                alert('Invalid share code! Please check and try again.');
+            }
+        });
+    </script>
+</body>
+</html>
